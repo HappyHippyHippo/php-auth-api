@@ -1,0 +1,37 @@
+get:
+  summary: API health check endpoint.
+  description:
+    Endpoint used to validate the state of the service.<br />
+    The service will perform internal checks to validate that can respond to all request.
+  tags:
+    - base
+  responses:
+    '200':
+      description: All health check tests passed.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeCheck'
+          examples:
+            generic:
+              $ref: '../components/base.yaml#/components/examples/EnvelopeCheck'
+    '500':
+      description: Unexpected server error.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            generic:
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e2.c0
+                      message: Human-readable message

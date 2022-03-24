@@ -1,0 +1,168 @@
+components:
+  headers:
+    X-Api-Version:
+      description: API version.
+      schema:
+        type: string
+        format: version
+
+  schemas:
+    ListReport:
+      type: object
+      properties:
+        search:
+          type: string
+        start:
+          type: integer
+        count:
+          type: integer
+        total:
+          type: integer
+        prev:
+          type: string
+        next:
+          type: string
+
+    EnvelopeStatus:
+      type: object
+      properties:
+        success:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+              message:
+                type: string
+
+    EnvelopeNoData:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/EnvelopeStatus'
+
+    EnvelopeIndex:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/EnvelopeStatus'
+        data:
+          type: object
+          properties:
+            name:
+              type: string
+            version:
+              type: string
+              format: version
+            routes:
+              type: object
+              properties:
+                route1:
+                  type: string
+                route2:
+                  type: string
+                route3:
+                  type: string
+
+    EnvelopeCheck:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/EnvelopeStatus'
+        data:
+          type: object
+          properties:
+            checks:
+              type: object
+              properties:
+                check1:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                    message:
+                      type: string
+                check2:
+                  type: object
+                  properties:
+                    success:
+                      type: boolean
+                    message:
+                      type: string
+
+    EnvelopeOpenapi:
+      type: object
+      properties:
+        openapi:
+          type: string
+        info:
+          type: string
+        paths:
+          type: object
+
+    EnvelopeConfig:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/EnvelopeStatus'
+        data:
+          type: object
+          properties:
+            section:
+              type: object
+              properties:
+                field1:
+                  type: string
+                field2:
+                  type: string
+
+  examples:
+    EnvelopeIndex:
+      value:
+        status:
+          success: true
+          errors: []
+        data:
+          name: api-name
+          version: 1.0.0
+          routes:
+            index: '[GET] /'
+            check: '[GET] /__check'
+            openapi: '[GET] /__openapi'
+            config: '[GET] /__config'
+
+    EnvelopeCheck:
+      value:
+        status:
+          success: true
+          errors: []
+        data:
+          checks:
+            test1:
+              success: true
+              message: success message
+            test2:
+              success: true
+              message: success message
+
+    EnvelopeOpenapi:
+      value:
+        openapi: 3.0.0
+        info: Human readable description of the service
+        paths: [ ]
+    EnvelopeConfig:
+      value:
+        status:
+          success: true
+          errors: []
+        data:
+          config:
+            section1:
+              field1: value1
+              field2: value2
+            section2:
+              field1: value1
+              field2: value2

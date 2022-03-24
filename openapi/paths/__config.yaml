@@ -1,0 +1,36 @@
+get:
+  summary: Running configuration of the service.
+  description:
+    Endpoint used to retrieve the current configuration of the service.
+  tags:
+    - base
+  responses:
+    '200':
+      description: Retrieved the configuration successfully.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeConfig'
+          examples:
+            generic:
+              $ref: '../components/base.yaml#/components/examples/EnvelopeConfig'
+    '500':
+      description: Unexpected server error.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            generic:
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e4.c0
+                      message: Human-readable message

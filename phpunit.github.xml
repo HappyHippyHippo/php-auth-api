@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+        backupGlobals="false"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        bootstrap="tests/bootstrap.php">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <exclude>
+      <file>src/Kernel.php</file>
+      <directory>src/Migrations</directory>
+    </exclude>
+  </coverage>
+  <php>
+    <ini name="error_reporting" value="-1"/>
+    <ini name="memory_limit" value="1024M" />
+    <server name="KERNEL_CLASS" value="App\Kernel" force="true"/>
+    <server name="APP_ENV" value="github" force="true"/>
+    <server name="SHELL_VERBOSITY" value="-1"/>
+    <server name="SYMFONY_PHPUNIT_REMOVE" value=""/>
+    <server name="SYMFONY_PHPUNIT_VERSION" value="7.5"/>
+    <env name="HIPPY_DATABASE_LOCAL_DRIVER" value="pdo_sqlite"/>
+    <env name="HIPPY_DATABASE_LOCAL_HOST" value=":memory:"/>
+    <env name="HIPPY_DATABASE_LOCAL_PORT" value="3306"/>
+    <env name="HIPPY_DATABASE_LOCAL_VERSION" value="3"/>
+    <env name="HIPPY_DATABASE_LOCAL_SCHEMA" value="local"/>
+    <env name="HIPPY_DATABASE_LOCAL_USER" value="root"/>
+    <env name="HIPPY_DATABASE_LOCAL_PASSWORD" value="root"/>
+  </php>
+  <testsuites>
+    <testsuite name="all">
+      <directory>tests</directory>
+    </testsuite>
+    <testsuite name="functional">
+      <directory>tests/Functional</directory>
+    </testsuite>
+  </testsuites>
+  <listeners>
+    <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
+  </listeners>
+</phpunit>

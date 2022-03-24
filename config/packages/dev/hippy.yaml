@@ -1,0 +1,11 @@
+hippy_api:
+  errors:
+    trace:
+      enabled: true
+  endpoint:
+    config:
+      enabled: true
+    openapi:
+      enabled: true
+      servers:
+        - http://api.local:8082/

@@ -1,0 +1,3 @@
+HippyApiBundle:
+  resource: '@HippyApiBundle/Resources/config/routes.yaml'
+  prefix: /

@@ -1,0 +1,36 @@
+get:
+  summary: API service description.
+  description:
+    Endpoint used to validate the service name, version and routes.
+  tags:
+    - base
+  responses:
+    '200':
+      description: A service description.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeIndex'
+          examples:
+            generic:
+              $ref: '../components/base.yaml#/components/examples/EnvelopeIndex'
+    '500':
+      description: Unexpected server error.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            generic:
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e1.c0
+                      message: Human-readable message

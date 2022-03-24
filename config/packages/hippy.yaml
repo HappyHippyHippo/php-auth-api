@@ -1,0 +1,6 @@
+hippy_api:
+  app:
+    id: 2
+    name: auth
+  cors:
+    enabled: true

@@ -1,0 +1,54 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    _instanceof:
+        Hippy\Config\Partial\PartialInterface:
+            tags: [hippy.config.partial]
+        Hippy\Api\Service\Base\Check\CheckInterface:
+            tags: [hippy.check.handler]
+        Hippy\Api\Transformer\OpenApi\TransformerInterface:
+            tags: [hippy.openapi.transformer]
+        Hippy\Api\Transformer\Logging\Strategy\StrategyInterface:
+            tags: [hippy.logging.strategy]
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../tests/'
+
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    Hippy\Config\Config:
+        arguments:
+            $partials: !tagged_iterator hippy.config.partial
+            $root: '%kernel.project_dir%'
+            $config:
+                - '%hippy.config%'
+                - '%hippy.api.config%'
+
+    App\Repository\RepositoryFactory:
+        arguments:
+            $localEntityManager: '@doctrine.orm.local_entity_manager'
+
+    App\Service\Base\Check\DatabaseLocalConnectionCheck:
+        arguments:
+            $connection: '@doctrine.dbal.local_connection'
+
+    App\Service\Base\Check\DatabaseLocalQueryCheck:
+        arguments:
+            $connection: '@doctrine.dbal.local_connection'

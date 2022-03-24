@@ -1,0 +1,29 @@
+openapi: 3.0.0
+
+info:
+  title: Authentication API
+  description:
+    API layer used to authenticate a user in the hippy ecosystem.<br />
+  version: <<version>>
+
+servers: []
+
+paths:
+  /:
+    $ref: 'paths/__index.yaml'
+  /__check:
+    $ref: 'paths/__check.yaml'
+  /__openapi:
+    $ref: 'paths/__openapi.yaml'
+  /__config:
+    $ref: 'paths/__config.yaml'
+  /auth:
+    $ref: 'paths/auth-auth.yaml'
+  /auth/chap:
+    $ref: 'paths/auth-auth_chap.yaml'
+  /auth/legacy:
+    $ref: 'paths/auth-auth_legacy.yaml'
+  /users:
+    $ref: 'paths/auth-users.yaml'
+  /users/{id}:
+    $ref: 'paths/auth-users_id.yaml'

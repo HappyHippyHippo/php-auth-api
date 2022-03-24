@@ -1,0 +1,257 @@
+get:
+  summary: Authentication challenge request.
+  description:
+    Endpoint used to request a chap authentication challenge.
+  tags:
+    - authentication
+  parameters:
+    - in: query
+      name: email
+      schema:
+        type: string
+        format: email
+      required: true
+      description: |
+        Email of the user that is requesting the challenge
+  responses:
+    '200':
+      description: Valid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/auth.yaml#/components/schemas/EnvelopeChapChallenge'
+          examples:
+            default:
+              $ref: '../components/auth.yaml#/components/examples/EnvelopeChapChallenge'
+    '400':
+      description: Invalid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'missing email':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e102.p1.c370
+                      message: email parameter must be present
+            'invalid email':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e102.p1.c120
+                      message: email parameter must be a valid email
+    '401':
+      description: Failed challenge request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'user not found':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e102.c11
+                      message: user not active
+            'user not active':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e102.c11
+                      message: user not active
+            'user without local auth info':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e102.c12
+                      message: user authentication missing
+            'user in cool down':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e102.c14
+                      message: user in cool down
+    '500':
+      description: Unexpected server error.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            generic:
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e102.c0
+                      message: Human-readable message
+
+post:
+  summary: Authentication challenge response.
+  description:
+    Endpoint used to reply to a chap authentication challenge request.
+  tags:
+    - authentication
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+            challenge:
+              type: string
+            response:
+              type: string
+          required:
+            - email
+            - challenge
+            - response
+        examples:
+          generic:
+            value:
+              email: email@email.com
+              challenge: challenge string
+              response: response string
+  responses:
+    '201':
+      description: Valid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/auth.yaml#/components/schemas/EnvelopeToken'
+          examples:
+            generic:
+              $ref: '../components/auth.yaml#/components/examples/EnvelopeToken'
+    '400':
+      description: Invalid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'missing email':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e103.p1.c370
+                      message: email parameter must be present
+            'invalid email':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e103.p1.c120
+                      message: email parameter must be a valid email
+            'missing challenge':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e103.p2.c370
+                      message: challenge parameter must be present
+            'missing response':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e103.p3.c370
+                      message: response parameter must be present
+    '401':
+      description: Failed authentication.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'user not found':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e103.c11
+                      message: user not active
+            'user not active':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e103.c11
+                      message: user not active
+            'user without local auth info':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e103.c12
+                      message: user authentication missing
+            'user in cool down':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e103.c14
+                      message: user in cool down
+            'invalid challenge':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e103.c15
+                      message: invalid challenge
+            'invalid response':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e103.c16
+                      message: invalid response
+    '500':
+      description: Unexpected server error.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            generic:
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e103.c0
+                      message: Human-readable message

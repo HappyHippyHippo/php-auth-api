@@ -1,0 +1,115 @@
+get:
+  summary: Users retrieval by id.
+  description:
+    Endpoint used to retrieve the information if an user identified by his ID.
+  tags:
+    - user
+  parameters:
+    - in: path
+      name: id
+      schema:
+        oneOf:
+          - type: integer
+            minimum: 1
+          - type: string
+            format: uuid
+      required: true
+      description: |
+        ID integer or UUID string of the user to be retrieved
+  responses:
+    '200':
+      description: Valid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/auth.yaml#/components/schemas/EnvelopeUser'
+          examples:
+            generic:
+              $ref: '../components/auth.yaml#/components/examples/EnvelopeUser'
+    '400':
+      description: Invalid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'invalid string id':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e200.p1.c1
+                      message: >
+                        This value should satisfy at least one of the following constraints:
+                        [1] id parameter must be an integer
+                        [2] id parameter must be a valid UUID
+            'invalid float id':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e200.p1.c1
+                      message: >
+                        This value should satisfy at least one of the following constraints:
+                        [1] id parameter must be an integer
+                        [2] id parameter must be a valid UUID
+            'invalid negative id':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e200.p1.c1
+                      message: >
+                        This value should satisfy at least one of the following constraints:
+                        [1] id parameter must be an integer
+                        [2] id parameter must be a valid UUID
+            'invalid zero id':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e200.p1.c1
+                      message: >
+                        This value should satisfy at least one of the following constraints:
+                        [1] id parameter must be a positive integer
+                        [2] id parameter must be a valid UUID
+    '404':
+      description: Users not found.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'user not found':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e200.c10
+                      message: user not found
+    '500':
+      description: Unexpected server error.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            generic:
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e200.c0
+                      message: Human-readable message

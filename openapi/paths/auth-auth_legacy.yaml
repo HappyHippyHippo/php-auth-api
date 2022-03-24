@@ -1,0 +1,124 @@
+post:
+  summary: Legacy authentication request.
+  description:
+    Endpoint used to perform a legacy schema authentication where the request is done by providing the email and password.
+  tags:
+    - authentication
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+          required:
+            - email
+            - password
+        examples:
+          generic:
+            value:
+              email: email@email.com
+              password: password
+  responses:
+    '201':
+      description: Valid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/auth.yaml#/components/schemas/EnvelopeToken'
+          examples:
+            generic:
+              $ref: '../components/auth.yaml#/components/examples/EnvelopeToken'
+    '400':
+      description: Invalid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'missing email':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e104.p1.c370
+                      message: email parameter must be present
+            'invalid email':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e104.p1.c120
+                      message: email parameter must be a valid email
+            'missing password':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e104.p2.c370
+                      message: password parameter must be present
+    '401':
+      description: Failed authentication.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'user not found':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e104.c11
+                      message: user not active
+            'user not active':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e104.c11
+                      message: user not active
+            'user in cool down':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e104.c14
+                      message: user in cool down
+            'invalid auth':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e104.c13
+                      message: invalid authentication information
+    '500':
+      description: Unexpected server error.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            generic:
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e104.c0
+                      message: Human-readable message

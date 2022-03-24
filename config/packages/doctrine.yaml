@@ -1,0 +1,24 @@
+doctrine:
+    dbal:
+        default_connection: local
+        connections:
+            local:
+                driver:               '%env(resolve:HIPPY_DATABASE_LOCAL_DRIVER)%'
+                dbname:               '%env(resolve:HIPPY_DATABASE_LOCAL_SCHEMA)%'
+                host:                 '%env(resolve:HIPPY_DATABASE_LOCAL_HOST)%'
+                port:                 '%env(resolve:HIPPY_DATABASE_LOCAL_PORT)%'
+                user:                 '%env(resolve:HIPPY_DATABASE_LOCAL_USER)%'
+                password:             '%env(resolve:HIPPY_DATABASE_LOCAL_PASSWORD)%'
+                server_version:       '%env(resolve:HIPPY_DATABASE_LOCAL_VERSION)%'
+    orm:
+        default_entity_manager: local
+        entity_managers:
+            local:
+                connection: local
+                mappings:
+                    Local:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Model/Entity/Local'
+                        prefix: 'App\Model\Entity\Local'
+                        alias: Local

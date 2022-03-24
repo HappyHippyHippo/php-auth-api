@@ -1,0 +1,225 @@
+get:
+  summary: Authentication token check.
+  description:
+    Endpoint used to check if an authentication token/JWT is valid.
+  tags:
+    - authentication
+  parameters:
+    - in: query
+      name: jwt
+      schema:
+        type: string
+        format: jwt
+      required: true
+      description: |
+        JWT token to be chacked
+  responses:
+    '204':
+      description: Valid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+    '400':
+      description: Invalid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'missing jwt':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e100.p1.c370
+                      message: jwt parameter must be present
+    '404':
+      description: Token not found.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'jwt not found':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e100.c20
+                      message: token not found
+    '410':
+      description: Token expired.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'jwt expired':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e100.c21
+                      message: token expired
+    '500':
+      description: Unexpected server error.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            generic:
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e100.c0
+                      message: Human-readable message
+
+put:
+  summary: Authentication token refresh.
+  description:
+    Endpoint used to recover/refresh a authentication token.
+  tags:
+    - authentication
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            jwt:
+              type: string
+            response:
+              type: string
+        examples:
+          generic:
+            value:
+              jwt: jwt string
+              recover: recover string
+  responses:
+    '201':
+      description: Valid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/auth.yaml#/components/schemas/EnvelopeToken'
+          examples:
+            generic:
+              $ref: '../components/auth.yaml#/components/examples/EnvelopeToken'
+    '400':
+      description: Invalid request.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'missing jwt':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e101.p1.c370
+                      message: jwt parameter must be present
+            'missing response':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e101.p2.c370
+                      message: recover parameter must be present
+    '401':
+      description: Failed authentication recover.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            'jwt not found':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e101.c17
+                      message: invalid recover
+            'invalid recover':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e101.c17
+                      message: invalid recover
+            'user not found':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e101.c11
+                      message: user not active
+            'user not active':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e101.c11
+                      message: user not active
+            'user in cool down':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e101.c14
+                      message: user in cool down
+            'not last user token':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e101.c18
+                      message: invalid last token
+            'still active token':
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e101.c19
+                      message: token still active
+    '500':
+      description: Unexpected server error.
+      headers:
+        X-API-Version:
+          $ref: '../components/base.yaml#/components/headers/X-Api-Version'
+      content:
+        application/json:
+          schema:
+            $ref: '../components/base.yaml#/components/schemas/EnvelopeNoData'
+          examples:
+            generic:
+              value:
+                status:
+                  success: false
+                  errors:
+                    - code: s2.e101.c0
+                      message: Human-readable message
